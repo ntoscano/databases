@@ -13,16 +13,15 @@ module.exports = {
       })
 
     }, // a function which produces all the messages
-    post: function (callback) {
-      db.connection.query('INSERT INTO user_info (username) VALUES (?)', ['kate'], function(err, results){
+    post: function (ID, callback) {
+      db.connection.query('INSERT INTO messages (userID,text) VALUES (?,\'hello\')', [ID], function(err){
         if(err) throw err;
-        db.connection.query('INSERT INTO messages (text) VALUES (?)', ['hello'], function(err, results){
+        db.connection.query('SELECT * FROM messages', function(err, results){
           if(err) throw err;
+          console.log('models.messages.post', results)
           callback(results);
         })
-        callback(results);
-      })
-      
+      })      
     } // a function which can be used to insert a message into the database
   },
 
@@ -30,10 +29,24 @@ module.exports = {
     // Ditto as above.
     get: function () {},
     post: function (username, callback) {
-      db.connection.query('INSERT INTO user_info (username) VALUES (?)', [username], function(err, results){
-        if(err) throw err;
-        callback(results);
-      })
+      console.log('user_info');
+      db.connection.query('SELECT userID FROM user_info WHERE username = (?)', [username], function(err, results){
+        console.log('user_info.query', results);
+        if(err || results.length === 0){
+          db.connection.query('INSERT INTO user_info (username) VALUES (?)', [username], function(err, results){
+            console.log('insert');
+            if(err) throw err;
+            db.connection.query('SELECT userID from user_info', function(err, results){ 
+              console.log('SELECT after insert');
+              if(err) throw err;
+              callback(results);
+            });
+          });
+        } else {
+          console.log('model.insert.else', results)
+          callback(results);
+        }
+      });
     }
   }
 };
