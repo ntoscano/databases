@@ -13,8 +13,8 @@ module.exports = {
       })
 
     }, // a function which produces all the messages
-    post: function (ID, callback) {
-      db.connection.query('INSERT INTO messages (userID,text) VALUES (?,\'hello\')', [ID], function(err){
+    post: function (ID, message, callback) {
+      db.connection.query('INSERT INTO messages (userID,text) VALUES (?, ?)', [ID, message], function(err){
         if(err) throw err;
         db.connection.query('SELECT * FROM messages', function(err, results){
           if(err) throw err;
@@ -27,16 +27,18 @@ module.exports = {
 
   user_info: {
     // Ditto as above.
-    get: function () {},
+    get: function (callback) {
+      // db.connection.query('SELECT ')
+    },
     post: function (username, callback) {
       console.log('user_info');
-      db.connection.query('SELECT userID FROM user_info WHERE username = (?)', [username], function(err, results){
+      db.connection.query('SELECT * FROM user_info WHERE username = (?)', [username], function(err, results){
         console.log('user_info.query', results);
         if(err || results.length === 0){
           db.connection.query('INSERT INTO user_info (username) VALUES (?)', [username], function(err, results){
             console.log('insert');
             if(err) throw err;
-            db.connection.query('SELECT userID from user_info', function(err, results){ 
+            db.connection.query('SELECT * from user_info', function(err, results){ 
               console.log('SELECT after insert');
               if(err) throw err;
               callback(results);

@@ -4,7 +4,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 var Message = Backbone.Model.extend({
-  url: 'https://127.0.0.1:3000/classes/messages',
+  url: 'https://localhost:3000/classes/messages',
   defaults: {
     username: ''
   }
@@ -12,7 +12,7 @@ var Message = Backbone.Model.extend({
 
 var Messages = Backbone.Collection.extend({
   model: Message,
-  url: 'https://127.0.0.1:3000/classes/messages',
+  url: 'https://localhost:3000/classes/messages',
 
   loadMsgs: function(){
     this.fetch();
